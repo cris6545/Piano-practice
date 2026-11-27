@@ -4,7 +4,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/piano-practice/',
+  base: '/Piano-practice/',
   plugins: [
     react(),
     VitePWA({
@@ -13,8 +13,8 @@ export default defineConfig({
       manifest: {
         name: 'Piano Practice',
         short_name: 'Piano Practice',
-        start_url: '/piano-practice/',
-        scope: '/piano-practice/',
+        start_url: '/Piano-practice/',
+        scope: '/Piano-practice/',
         display: 'standalone',
         theme_color: '#ffffff',
         background_color: '#ffffff',
