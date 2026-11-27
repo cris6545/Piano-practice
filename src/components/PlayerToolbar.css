@@ -1,0 +1,63 @@
+.player-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--panel-bg);
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+.tb-modes {
+  display: flex;
+  gap: 6px;
+  flex: 1;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.tb-btn {
+  font: inherit;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-h);
+  border-radius: 8px;
+  padding: 6px 10px;
+}
+
+.tb-btn.icon {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 56px;
+  gap: 2px;
+  font-size: 13px;
+}
+
+.tb-btn .tb-label {
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+.tb-btn.active {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.tb-btn.ghost {
+  background: transparent;
+}
+
+.tb-midi {
+  font-size: 12px;
+  opacity: 0.8;
+  max-width: 220px;
+  text-align: right;
+}
+
+.tb-midi.ok {
+  opacity: 1;
+  color: #15803d;
+}
