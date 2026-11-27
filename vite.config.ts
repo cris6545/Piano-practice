@@ -9,7 +9,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'favicon.ico', 'apple-touch-icon-180x180.png'],
+      includeAssets: ['favicon.png', 'favicon.ico', 'apple-touch-icon-180x180.png'],
       manifest: {
         name: 'Piano Practice',
         short_name: 'Piano Practice',
