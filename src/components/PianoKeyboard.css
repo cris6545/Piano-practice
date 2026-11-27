@@ -4,7 +4,6 @@
   overflow-x: auto;
   overflow-y: hidden;
   background: var(--panel-bg);
-  border-top: 1px solid var(--border);
   flex-shrink: 0;
 }
 
