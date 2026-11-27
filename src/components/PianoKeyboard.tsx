@@ -5,11 +5,12 @@ const MIDI_END = 108
 const BLACK_OFFSETS = new Set([1, 3, 6, 8, 10])
 
 interface PianoKeyboardProps {
+  id?: string
   highlight: Set<number>
   pressed: Set<number>
 }
 
-export function PianoKeyboard({ highlight, pressed }: PianoKeyboardProps) {
+export function PianoKeyboard({ id, highlight, pressed }: PianoKeyboardProps) {
   const keys: { midi: number; black: boolean }[] = []
   for (let midi = MIDI_START; midi <= MIDI_END; midi++) {
     keys.push({ midi, black: BLACK_OFFSETS.has(midi % 12) })
@@ -18,6 +19,7 @@ export function PianoKeyboard({ highlight, pressed }: PianoKeyboardProps) {
 
   return (
     <div
+      id={id}
       className="piano-wrap"
       aria-label="Piano keyboard"
       style={{ '--white-count': whitesTotal } as React.CSSProperties}

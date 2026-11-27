@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { Song, PlayerMode } from '../types/song'
+import { stripScoreFileExtension } from '../lib/fileImport'
 import type { ChordGroup } from '../types/song'
 import type { StaffHighlightState } from '../lib/osmdStaffHighlight'
 import {
@@ -19,6 +20,11 @@ import {
   rhythmConsistencyFromAttacks,
 } from '../lib/practiceSectionSession'
 import {
+  isPianoKeyboardCollapsed,
+  PIANO_COLLAPSED_KEY,
+  setPianoKeyboardCollapsed,
+} from '../lib/pianoUiPrefs'
+import {
   isPracticeDebugEnabled,
   logPracticeDebug,
   practiceStepsFromScheduleFallback,
@@ -36,13 +42,8 @@ interface SongPlayerProps {
   onBack: () => void
 }
 
-function titleFromFileName(name: string): string {
-  return name.replace(/\.(musicxml|xml|mxl|mid|midi)$/i, '').replace(/[-_]/g, ' ')
-}
-
 function songDisplayTitle(song: Song): string {
-  if (song.sourceType === 'mid') return titleFromFileName(song.originalFileName)
-  return song.title
+  return stripScoreFileExtension(song.originalFileName)
 }
 
 function flattenMatchedCounts(counts: Map<number, number>): number[] {
@@ -82,6 +83,7 @@ export function SongPlayer({ song, onBack }: SongPlayerProps) {
   const [completedSections, setCompletedSections] = useState<PracticeTimeRange[]>([])
   const [staffFlashMessage, setStaffFlashMessage] = useState<string | null>(null)
   const [practiceDebug, setPracticeDebug] = useState(() => isPracticeDebugEnabled())
+  const [pianoCollapsed, setPianoCollapsed] = useState(() => isPianoKeyboardCollapsed())
   const sessionPassCountsRef = useRef<Record<string, number>>({})
   const staffFlashTimerRef = useRef(0)
   const sectionPreviewGenRef = useRef(0)
@@ -567,6 +569,7 @@ export function SongPlayer({ song, onBack }: SongPlayerProps) {
   useEffect(() => {
     const onStorage = (e: StorageEvent) => {
       if (e.key === 'pst-practice-debug') setPracticeDebug(isPracticeDebugEnabled())
+      if (e.key === PIANO_COLLAPSED_KEY) setPianoCollapsed(isPianoKeyboardCollapsed())
     }
     window.addEventListener('storage', onStorage)
     return () => window.removeEventListener('storage', onStorage)
@@ -646,7 +649,32 @@ export function SongPlayer({ song, onBack }: SongPlayerProps) {
         )}
       </div>
 
-      <PianoKeyboard highlight={highlightKeys} pressed={activeNotes} />
+      <div className="piano-panel">
+        <button
+          type="button"
+          className="piano-collapse-toggle"
+          onClick={() =>
+            setPianoCollapsed((c) => {
+              const next = !c
+              setPianoKeyboardCollapsed(next)
+              return next
+            })
+          }
+          aria-expanded={!pianoCollapsed}
+          aria-controls="song-piano-keyboard"
+          title={pianoCollapsed ? 'Show piano' : 'Hide piano'}
+        >
+          <span
+            className={`piano-collapse-arrow${pianoCollapsed ? ' collapsed' : ''}`}
+            aria-hidden
+          >
+            ▼
+          </span>
+        </button>
+        {!pianoCollapsed && (
+          <PianoKeyboard id="song-piano-keyboard" highlight={highlightKeys} pressed={activeNotes} />
+        )}
+      </div>
     </div>
   )
 }
