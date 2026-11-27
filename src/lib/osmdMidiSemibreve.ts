@@ -9,6 +9,8 @@ const TIME_EPS = 0.003
 const LAYER_CLASS = 'pst-midi-sembreve-layer'
 const PRESSED_COLOR = '#22c55e'
 const WRONG_PRESS_COLOR = '#dc2626'
+/** Matches practice highlight on the score (partial chord). */
+const PARTIAL_PRACTICE_COLOR = '#f59e0b'
 
 let lastOverlayKey = ''
 let debugLoggedMidis = ''
@@ -179,14 +181,25 @@ function midisToShow(
   if (!midiPressed.size) return []
 
   if (state.kind === 'practice') {
-    const wrong = new Set(state.wrongPressOverlayMidis ?? [])
-    if (!wrong.size) return []
     const stepComplete = isPracticeStepComplete(state.requiredMidis, state.matchedMidis)
     if (stepComplete) return []
 
+    const wrong = new Set(state.wrongPressOverlayMidis ?? [])
+    const expected = new Set(state.requiredMidis)
+    const matchedCount = new Map<number, number>()
+    for (const m of state.matchedMidis) {
+      matchedCount.set(m, (matchedCount.get(m) ?? 0) + 1)
+    }
+
     const out: { midi: number; color: string }[] = []
     for (const midi of midiPressed) {
-      if (wrong.has(midi)) out.push({ midi, color: WRONG_PRESS_COLOR })
+      if (wrong.has(midi)) {
+        out.push({ midi, color: WRONG_PRESS_COLOR })
+        continue
+      }
+      if (expected.has(midi) && (matchedCount.get(midi) ?? 0) > 0) {
+        out.push({ midi, color: PARTIAL_PRACTICE_COLOR })
+      }
     }
     return out
   }
